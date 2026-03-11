@@ -1,0 +1,1 @@
+Sitemap: https://michaelrejtig.github.io/quarto_rt_data_github/sitemap.xml

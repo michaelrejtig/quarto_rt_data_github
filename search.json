@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Quarto Real-time Data",
+    "section": "",
+    "text": "Testing Quarto + OJS to display real-time data in a Quarto project that is hosted on a serverless site like quarto.pub or github pages.\nData: Bitcoin via Unicorn Data Services Code example comes from observablehq.\n\nd3 = require('d3')\n\nviewof streamActive = Inputs.toggle({ label: \"Toggle Stream\", value: false })\n\n// save each new value to lastBtc \n// avoids circular reference in btc and saves last value on display\nmutable lastBtc = \"Press Toggle Stream to begin\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nbtc = {\n  if (!streamActive) return mutable lastBtc;\n\n  const socket = new WebSocket(\"wss://ws.eodhistoricaldata.com/ws/crypto?api_token=demo\");\n  \n  invalidation.then(() =&gt; socket.close());\n  \n  socket.addEventListener(\"open\", () =&gt;\n    socket.send(JSON.stringify({ action: \"subscribe\", symbols: \"BTC-USD\" }))\n  );\n\n  return Generators.observe((notify) =&gt; {\n    let currentValue;\n    const messaged = (event) =&gt; {\n      const m = JSON.parse(event.data);\n      const v = +m.p;\n      if (isNaN(v) || v === currentValue) return;\n      mutable lastBtc = (currentValue = v);\n      notify(currentValue);\n    };\n    socket.addEventListener(\"message\", messaged);\n    return () =&gt; socket.removeEventListener(\"message\", messaged);\n  });\n}\n\n// Works -- pasuses data display, but websocket remains open\n// btc = {\n//   const socket = new WebSocket(\"wss://ws.eodhistoricaldata.com/ws/crypto?api_token=demo\");\n  \n//   invalidation.then(() =&gt; socket.close());\n  \n//   socket.addEventListener(\"open\", () =&gt;\n//     socket.send(JSON.stringify({ action: \"subscribe\", symbols: \"BTC-USD\" }))\n//   );\n\n//   return Generators.observe((notify) =&gt; {\n//     let currentValue;\n//     const messaged = (event) =&gt; {\n//       if (!streamActive) return;\n//       const m = JSON.parse(event.data);\n//       const v = +m.p;\n//       if (isNaN(v) || v === currentValue) return;\n//       notify((currentValue = v));\n//     };\n//     socket.addEventListener(\"message\", messaged);\n//     return () =&gt; socket.removeEventListener(\"message\", messaged);\n//   });\n// }\nbtc"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]
