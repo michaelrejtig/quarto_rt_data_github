@@ -1,0 +1,77 @@
+---
+title: "Quarto Real-time Data"
+execute:
+    echo: false
+---
+
+Testing Quarto + OJS to display real-time data in a Quarto project that is hosted on a serverless site like quarto.pub or github pages.
+
+Data: Bitcoin via Unicorn Data Services
+Code example comes from [observablehq](https://observablehq.com/framework/reactivity).
+
+```{ojs data_streame_toggle}
+// Setup libraries
+d3 = require('d3')
+
+viewof streamActive = Inputs.toggle({ label: "Toggle Stream", value: false })
+
+// save each new value to lastBtc 
+// avoids circular reference in btc and saves last value on display
+mutable lastBtc = "Press Toggle Stream to begin"
+```
+
+```{ojs data_stream}
+
+// Workes -- pauses diplay and websocket connection
+btc = {
+  if (!streamActive) return mutable lastBtc;
+
+  const socket = new WebSocket("wss://ws.eodhistoricaldata.com/ws/crypto?api_token=demo");
+  
+  invalidation.then(() => socket.close());
+  
+  socket.addEventListener("open", () =>
+    socket.send(JSON.stringify({ action: "subscribe", symbols: "BTC-USD" }))
+  );
+
+  return Generators.observe((notify) => {
+    let currentValue;
+    const messaged = (event) => {
+      const m = JSON.parse(event.data);
+      const v = +m.p;
+      if (isNaN(v) || v === currentValue) return;
+      mutable lastBtc = (currentValue = v);
+      notify(currentValue);
+    };
+    socket.addEventListener("message", messaged);
+    return () => socket.removeEventListener("message", messaged);
+  });
+}
+
+// Works -- pasuses data display, but websocket remains open
+// btc = {
+//   const socket = new WebSocket("wss://ws.eodhistoricaldata.com/ws/crypto?api_token=demo");
+  
+//   invalidation.then(() => socket.close());
+  
+//   socket.addEventListener("open", () =>
+//     socket.send(JSON.stringify({ action: "subscribe", symbols: "BTC-USD" }))
+//   );
+
+//   return Generators.observe((notify) => {
+//     let currentValue;
+//     const messaged = (event) => {
+//       if (!streamActive) return;
+//       const m = JSON.parse(event.data);
+//       const v = +m.p;
+//       if (isNaN(v) || v === currentValue) return;
+//       notify((currentValue = v));
+//     };
+//     socket.addEventListener("message", messaged);
+//     return () => socket.removeEventListener("message", messaged);
+//   });
+// }
+btc
+```
+
+
