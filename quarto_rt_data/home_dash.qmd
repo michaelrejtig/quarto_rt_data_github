@@ -1,0 +1,62 @@
+---
+title: "Home Dash"
+---
+
+```{ojs data_streame_toggle}
+// Setup libraries
+d3 = require('d3')
+
+viewof streamActive = Inputs.toggle({ label: "Toggle Stream", value: false })
+
+// save each new value to lastBtc 
+// avoids circular reference in btc and saves last value on display
+mutable lastBtc = "Press Toggle Stream to begin"
+```
+
+
+```{ojs}
+// weather_raw = await d3.json(
+//   "https://api.open-meteo.com/v1/forecast?latitude=35.23&longitude=-80.84&temperature_unit=fahrenheit&current=temperature_2m,cloud_cover&hourly=temperature_2m,cloud_cover&forecast_days=1"
+// )
+
+weather_raw = Generators.observe((notify) => {
+  
+  const fetchWeather = async () => {
+    const data = await d3.json(
+      "https://api.open-meteo.com/v1/forecast?latitude=35.23&longitude=-80.84&temperature_unit=fahrenheit&current=temperature_2m,cloud_cover&hourly=temperature_2m,cloud_cover&forecast_days=1"
+    );
+    notify(data);
+  };
+
+  // Fetch immediately on load
+  fetchWeather();
+
+  // Then fetch every 15 minutes
+  const interval = setInterval(fetchWeather, 15 * 60 * 1000);
+
+  // Cleanup when cell is invalidated
+  return () => clearInterval(interval);
+})
+```
+
+<!-- ::: {layout="[ [1, 1] , []]"} -->
+
+<div class="grid-cols-2">
+<div class="card">
+
+```{ojs}
+// weather_raw.current
+weather_raw.current.temperature_2m
+```
+
+</div>
+<div class="card">
+
+```{ojs}
+weather_raw.hourly
+```
+
+</div>
+</div>
+
+<!-- ::: -->

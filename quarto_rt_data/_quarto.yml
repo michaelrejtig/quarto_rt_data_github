@@ -7,13 +7,19 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
+        text: test
+      - href: home_dash.qmd
+        text: Home Dash
       # - about.qmd
+
+execute: 
+  cache: false
+  echo: false
 
 format:
   html:
     theme:
-      - cosmo
+      - morph
       - brand
     css: styles.css
     toc: true

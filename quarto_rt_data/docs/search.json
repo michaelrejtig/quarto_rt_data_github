@@ -12,5 +12,12 @@
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "home_dash.html",
+    "href": "home_dash.html",
+    "title": "Home Dash",
+    "section": "",
+    "text": "d3 = require('d3')\n\nviewof streamActive = Inputs.toggle({ label: \"Toggle Stream\", value: false })\n\n// save each new value to lastBtc \n// avoids circular reference in btc and saves last value on display\nmutable lastBtc = \"Press Toggle Stream to begin\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nweather_raw = await d3.json(\n  \"https://api.open-meteo.com/v1/forecast?latitude=35.23&longitude=-80.84&temperature_unit=fahrenheit&current=temperature_2m,cloud_cover&hourly=temperature_2m,cloud_cover&forecast_days=1\"\n)\n\n\n\n\n\n\n\n\n\n\n// weather_raw.current\nweather_raw.current.temperature_2m\n\n\n\n\n\n\n\n\n\nweather_raw.hourly"
   }
 ]
